@@ -1,0 +1,3 @@
+---
+# vars file for ansible-silpion
+silpion_role_version: '0.1.0'

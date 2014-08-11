@@ -1,0 +1,33 @@
+---
+# defaults file for ansible-silpion
+
+# Configure the root users password.
+#   This should be a pre-hashed SHA 512 checksum of a password.
+#   You can use Python to generate a pre-hashed password:
+#
+#   $ python -c 'import crypt; print(crypt.crypt("<PASSWORD>", "$6$"))'
+silpion_root_password: ""
+
+# This variable allows to add additional packages to the base list
+# of packages to be INSTALLED without the need to overwrite the base
+# package list.
+silpion_package_list_in_custom: []
+
+# This variable allows to add additional packages to the base list
+# of packages to be REMOVED without the need to overwrite the base
+# package list.
+silpion_package_list_out_custom: []
+
+
+# Operating system specific configuration
+#
+#   ansible_os_family == 'Debian'
+#
+#     apt configuration
+silpion_apt_proxy_enabled: true
+silpion_apt_proxy_url: 'http://apt-proxy.silpion.de:9999'
+
+#   ansible_os_family == 'RedHat'
+#
+#     yum configuration
+silpion_yum_erase_fastestmirror: true

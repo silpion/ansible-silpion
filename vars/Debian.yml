@@ -1,0 +1,48 @@
+---
+# ansible_os_family == 'Debian'
+
+# Packages to be installed
+silpion_package_list_in:
+  - acl
+  - at
+  - bash-completion
+  - conntrack
+  - curl
+  - debconf-utils
+  - debsums
+  - dnsutils
+  - dstat
+  - git
+  - htop
+  - iptables
+  - libcap2-bin
+  - lsb-release
+  - lsof
+  - man-db
+  - moreutils
+  - ncdu
+  - netcat-openbsd
+  - ngrep
+  - numactl
+  - patch
+  - psmisc
+  - pv
+  - rsync
+  - screen
+  - socat
+  - ssldump
+  - strace
+  - sysfsutils
+  - tcpdump
+  - time
+  - tmux
+  - tree
+  - vim
+  - zerofree
+
+# Packages to be removed
+silpion_package_list_out: []
+
+# Packages required to run Ansible with SELinux enabled node
+silpion_package_list_selinux:
+  - python-selinux
