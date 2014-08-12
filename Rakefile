@@ -5,8 +5,7 @@ require 'rspec/core/rake_task'
 
 # we use data from the docker configuration in rake configuration
 require './spec/lib/docker'
-c = Docker.new
-c.ansible_inventory_add
+d = Docker.new
 
 
 desc "Run integration tests with serverspec"
@@ -22,36 +21,33 @@ end
 task :default => :lint
 
 
-desc "Clean test environment"
-task :clean do
-  c.ansible_inventory_del
-end
-
 
 # Docker
 desc "docker pull"
 task :docker_pull do
-  sh %{docker images|grep -q #{c.docker_img}||docker pull #{c.docker_img}:#{c.docker_tag}}
+  d.docker_pull
 end
 
 desc "docker run"
 task :docker_run => [:docker_pull] do
-  sh %{docker ps|grep -q #{c.env_name}||docker run #{c.docker_run} #{c.docker_img}:#{c.docker_tag} #{c.docker_cmd}}
+  d.docker_run
 end
 
 desc "docker 'provision'"
 task :docker_provision => [:docker_run] do
-  sh %{ansible-playbook --inventory-file #{c.ansible_inventory_file} --limit #{c.env_name} tests/playbook.yml}
+  d.ansible_inventory_add
+  sh %{ansible-playbook --inventory-file #{d.ansible_inventory_file} --limit #{d.env_name} tests/playbook.yml}
+  d.ansible_inventory_del
 end
 
 desc "docker stop"
 task :docker_stop do
-  sh %{docker ps --all|grep -q #{c.env_name}; docker stop #{c.env_name}}
+  d.docker_stop
 end
 
 desc "docker rm --force"
 task :docker_rm => [:docker_stop] do
-  sh %{docker ps --all|grep -q #{c.env_name}; docker rm --force #{c.env_name}}
+  d.docker_rm
 end
 
 

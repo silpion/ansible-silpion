@@ -1,6 +1,7 @@
 # TODO learn how to Ruby
 # TODO error handling
 # TODO are there docker gems?
+# TODO abstract docker list commands for re-usability
 
 require 'socket'
 require 'yaml'
@@ -48,12 +49,16 @@ class Docker
     if @ssh_port == nil
 
       # we need to verify if there is a Docker container running
-      docker_ps = `docker ps|awk '/#{@env_name}/{print $1}'`
+      docker_ps = `docker ps`
       if docker_ps != ''
-        # figure the public facing SSH port from container
-        docker_port = `docker port #{docker_ps.strip} 22`
-        if docker_port != ''
-          @ssh_port = docker_port.split(':')[1].to_i
+        docker_ps.each_line do |l|
+          if m = /#{@env_name}/.match(l)
+            docker_port = `docker port #{@env_name} 22`
+            if docker_port != ''
+              @ssh_port = docker_port.split(':')[1].to_i
+            end
+            break
+          end
         end
 
       # there is no Docker container running for this project
@@ -90,6 +95,8 @@ class Docker
     :ansible_inventory_file
 
 
+  # provide a generated Ansible inventory hosts
+  #   file for a Docker container
   def ansible_inventory_add
     unless File.exists? @ansible_inventory_file
       File.open(@ansible_inventory_file, 'w') do |c|
@@ -98,9 +105,99 @@ class Docker
     end
   end
 
+  # remove an existing generated Ansible inventory
+  #   hosts file for a Docker container
   def ansible_inventory_del
     if File.exists? @ansible_inventory_file
       File.unlink @ansible_inventory_file
+    end
+  end
+
+
+  # pull an image from Docker index.docker.io
+  def docker_pull
+    need_pull = true
+    docker_images = `docker images`
+    if docker_images != ''
+      docker_images.each_line do |l|
+        if m = /^#{@docker_img}/.match(l)
+          need_pull = false
+          break
+        end
+      end
+    end
+    if need_pull
+      `docker pull #{@docker_img}:#{@docker_tag}`
+    end
+  end
+
+  # run a fresh container
+  def docker_run
+    need_run = true
+    docker_ps = `docker ps --all`
+    if docker_ps != ''
+      docker_ps.each_line do |l|
+        if m = /#{@env_name}/.match(l)
+          need_run = false
+          break
+        end
+      end
+    end
+    if need_run
+      `docker run #{@docker_run} #{@docker_img}:#{@docker_tag} #{@docker_cmd}`
+    else
+      docker_start
+    end
+  end
+
+  # start an existing but running container
+  def docker_start
+    need_start = true
+    docker_ps = `docker ps`
+    if docker_ps != ''
+      docker_ps.each_line do |l|
+        if m = /#{@env_name}/.match(l)
+          need_start = false
+          break
+        end
+      end
+    end
+    if need_start
+      `docker start #{@env_name}`
+    end
+  end
+
+  # stop a running container
+  def docker_stop
+    need_stop = false
+    docker_ps = `docker ps`
+    if docker_ps != ''
+      docker_ps.each_line do |l|
+        if m = /#{@env_name}/.match(l)
+          need_stop = true
+          break
+        end
+      end
+    end
+    if need_stop
+      `docker stop #{@env_name}`
+    end
+  end
+
+  # remove an existing container
+  def docker_rm
+    need_rm = false
+    docker_ps = `docker ps --all`
+    if docker_ps != ''
+      docker_ps.each_line do |l|
+        if m = /#{@env_name}/.match(l)
+          need_rm = true
+          break
+        end
+      end
+    end
+    if need_rm
+      `docker rm --force #{@env_name}`
     end
   end
 
