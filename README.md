@@ -40,6 +40,21 @@ None.
 
 Apache Version 2.0
 
+## Integration testing
+
+This role provides integration tests using the Ruby RSpec/serverspec framework.
+
+    # run the complete test suite with Docker
+    bundle install
+    rake docker
+
+<!-- -->
+
+    # run the complete test suite with Vagratn
+    bundle install
+    rake vagrant
+
+
 ## Author information
 
 Mark Kusch @mark.kusch silpion.de

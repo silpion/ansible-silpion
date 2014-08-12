@@ -1,0 +1,19 @@
+---
+# This file configures the integration test suite with RSpec
+#   with Docker containers.
+#   Do NOT remove keys here. This might lead to unhandled
+#   exceptions.
+#   Only {{ ssh_port }} variable is evaluated. Other variables
+#   will not work.
+#
+#   If you don't change anything, everything SHOULD work :)
+env_name: ansiblesilpiontest
+
+ssh_user: root
+ssh_host: localhost
+ssh_keys: tests/docker-phusion-baseimage-insecure-private-key
+
+docker_img: phusion/baseimage
+docker_tag: latest
+docker_run: "--detach --hostname ansiblesilpiontest --name ansiblesilpiontest --net=bridge --publish {{ ssh_port }}:22"
+docker_cmd: "/sbin/my_init --enable-insecure-key"
