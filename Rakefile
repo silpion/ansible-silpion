@@ -59,8 +59,7 @@ task :docker => [
   :docker_provision,
   :spec,
   :docker_stop,
-  :docker_rm,
-  :clean
+  :docker_rm
 ]
 
 
@@ -94,6 +93,5 @@ task :vagrant => [
   :vagrant_provision,
   :spec,
   :vagrant_halt,
-  :vagrant_destroy,
-  :clean
+  :vagrant_destroy
 ]
