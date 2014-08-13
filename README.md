@@ -19,7 +19,7 @@ Baseline configuration for all nodes managed at Silpion.
 
 ### Pre-hash root password
 
-To create a SHA 512 hash for a password use the following Pyhton snippet:
+To create a SHA 512 hash for a password use the following Python snippet:
 
     python -c 'import crypt; print(crypt.crypt("<PASSWORD>", "$6$"))'
 
