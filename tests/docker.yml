@@ -14,6 +14,6 @@ ssh_host: localhost
 ssh_keys: tests/docker-phusion-baseimage-insecure-private-key
 
 docker_img: phusion/baseimage
-docker_tag: latest
+docker_tag: 0.9.12
 docker_run: "--detach --hostname ansiblesilpiontest --name ansiblesilpiontest --net=bridge --publish {{ ssh_port }}:22"
 docker_cmd: "/sbin/my_init --enable-insecure-key"
