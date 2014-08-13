@@ -35,9 +35,9 @@ end
 
 desc "docker 'provision'"
 task :docker_provision => [:docker_run] do
-  d.ansible_inventory_add
-  sh %{ansible-playbook --inventory-file #{d.ansible_inventory_file} --limit #{d.env_name} tests/playbook.yml}
-  d.ansible_inventory_del
+  d.ansible_hosts_add
+  sh %{ansible-playbook --inventory-file #{d.ansible_hosts_file} --limit #{d.env_name} tests/playbook.yml}
+  d.ansible_hosts_del
 end
 
 desc "docker stop"

@@ -1,7 +1,8 @@
 # TODO learn how to Ruby
 # TODO error handling
-# TODO are there docker gems?
-# TODO abstract docker list commands for re-usability
+# TODO there's the `docker-api' gem
+#       queriyng docker looks fine
+#       container management feels too abstract for the moment
 
 require 'socket'
 require 'yaml'
@@ -9,33 +10,42 @@ require 'yaml'
 class Docker
 
   private
-
+    # environment
+  @env_name = nil
+    # ssh
   @ssh_host = nil
-  @ssh_port = nil
   @ssh_user = nil
   @ssh_keys = nil
-  @env_name = nil
+  @ssh_port = nil
+    # docker
   @docker_img = nil
   @docker_tag = nil
   @docker_run = nil
   @docker_cmd = nil
-  @ansible_inventory_file = nil
+    # ansible
+  @ansible_hosts_file = nil
 
   def initialize
-    docker_cfg = YAML.load_file('tests/docker.yml')
-    @env_name = docker_cfg['env_name']
-    @ssh_host = docker_cfg['ssh_host']
+    begin
+      config = YAML.load_file('tests/docker.yml')
+      @env_name = config['env_name']
+      @ssh_host = config['ssh_host']
+      @ssh_user = config['ssh_user']
+      @ssh_keys = config['ssh_keys']
+      @docker_img = config['docker_img']
+      @docker_tag = config['docker_tag']
+      @docker_run = config['docker_run'].gsub(/{{.*}}/, @ssh_port.to_s)
+      @docker_cmd = config['docker_cmd']
+    rescue
+      raise 'Failed to parse configuration file: tests/docker.yml'
+    end
+
     @ssh_port = ssh_port?
-    @ssh_user = docker_cfg['ssh_user']
-    @ssh_keys = docker_cfg['ssh_keys']
-    @docker_img = docker_cfg['docker_img']
-    @docker_tag = docker_cfg['docker_tag']
-    @docker_run = docker_cfg['docker_run'].gsub(/{{.*}}/, @ssh_port.to_s)
-    @docker_cmd = docker_cfg['docker_cmd']
-    if File.writable? '/tmp'
-      @ansible_inventory_file = "/tmp/#{@env_name}.hosts"
+
+    if File.writable?('/tmp')
+      @ansible_hosts_file = "/tmp/#{@env_name}.hosts"
     else
-      @ansible_inventory_file = "#{ENV['HOME']}/#{@env_name}.hosts"
+      @ansible_hosts_file = "#{ENV['HOME']}/#{@env_name}.hosts"
     end
   end
 
@@ -49,25 +59,20 @@ class Docker
     if @ssh_port == nil
 
       # we need to verify if there is a Docker container running
-      docker_ps = `docker ps`
-      if docker_ps != ''
-        docker_ps.each_line do |l|
-          if m = /#{@env_name}/.match(l)
-            docker_port = `docker port #{@env_name} 22`
-            if docker_port != ''
-              @ssh_port = docker_port.split(':')[1].to_i
-            end
-            break
-          end
+      `docker ps`.each_line do |l|
+        if m = /#{@env_name}/.match(l)
+          @ssh_port = `docker port #{@env_name} 22`.split(':')[1].to_i
+          break
         end
+      end
 
       # there is no Docker container running for this project
       #   find a free port for SSH forwarding
-      else
+      if @ssh_port == nil
         while port_min < port_max do
           begin
             @ssh_port = port_min
-            TCPSocket.new('localhost', @ssh_port)
+            TCPSocket.new(@ssh_host, @ssh_port)
           rescue Errno::ECONNREFUSED
             break
           rescue
@@ -83,33 +88,28 @@ class Docker
 
 
   public
-  attr_reader :ssh_host,
-    :ssh_port,
+  attr_reader :env_name,
+    :ssh_host,
     :ssh_user,
+    :ssh_port,
     :ssh_keys,
-    :env_name,
-    :docker_img,
-    :docker_tag,
-    :docker_run,
-    :docker_cmd,
-    :ansible_inventory_file
+    :ansible_hosts_file
 
 
-  # provide a generated Ansible inventory hosts
-  #   file for a Docker container
-  def ansible_inventory_add
-    unless File.exists? @ansible_inventory_file
-      File.open(@ansible_inventory_file, 'w') do |c|
-        c.puts "#{@env_name} ansible_connection=ssh ansible_ssh_host=#{@ssh_host} ansible_ssh_user=#{@ssh_user} ansible_ssh_port=#{@ssh_port} ansible_ssh_private_key_file=#{@ssh_keys}"
+  # provide a generated Ansible hosts inventory
+  def ansible_hosts_add
+    unless File.exists?(@ansible_hosts_file)
+      File.open(@ansible_hosts_file, 'w') do |f|
+        f.puts "#{@env_name} ansible_connection=ssh ansible_ssh_host=#{@ssh_host} ansible_ssh_user=#{@ssh_user} ansible_ssh_port=#{@ssh_port} ansible_ssh_private_key_file=#{@ssh_keys}"
       end
     end
   end
 
-  # remove an existing generated Ansible inventory
+  # remove an existing generated Ansible hosts
   #   hosts file for a Docker container
-  def ansible_inventory_del
-    if File.exists? @ansible_inventory_file
-      File.unlink @ansible_inventory_file
+  def ansible_hosts_del
+    if File.exists?(@ansible_hosts_file)
+      File.unlink(@ansible_hosts_file)
     end
   end
 
@@ -117,13 +117,10 @@ class Docker
   # pull an image from Docker index.docker.io
   def docker_pull
     need_pull = true
-    docker_images = `docker images`
-    if docker_images != ''
-      docker_images.each_line do |l|
-        if m = /^#{@docker_img}/.match(l)
-          need_pull = false
-          break
-        end
+    `docker images`.each_line do |l|
+      if m = /^#{@docker_img}/.match(l)
+        need_pull = false
+        break
       end
     end
     if need_pull
@@ -134,13 +131,10 @@ class Docker
   # run a fresh container
   def docker_run
     need_run = true
-    docker_ps = `docker ps --all`
-    if docker_ps != ''
-      docker_ps.each_line do |l|
-        if m = /#{@env_name}/.match(l)
-          need_run = false
-          break
-        end
+    `docker ps --all`.each_line do |l|
+      if m = /#{@env_name}/.match(l)
+        need_run = false
+        break
       end
     end
     if need_run
@@ -153,13 +147,10 @@ class Docker
   # start an existing but running container
   def docker_start
     need_start = true
-    docker_ps = `docker ps`
-    if docker_ps != ''
-      docker_ps.each_line do |l|
-        if m = /#{@env_name}/.match(l)
-          need_start = false
-          break
-        end
+    `docker ps`.each_line do |l|
+      if m = /#{@env_name}/.match(l)
+        need_start = false
+        break
       end
     end
     if need_start
@@ -170,13 +161,10 @@ class Docker
   # stop a running container
   def docker_stop
     need_stop = false
-    docker_ps = `docker ps`
-    if docker_ps != ''
-      docker_ps.each_line do |l|
-        if m = /#{@env_name}/.match(l)
-          need_stop = true
-          break
-        end
+    `docker ps`.each_line do |l|
+      if m = /#{@env_name}/.match(l)
+        need_stop = true
+        break
       end
     end
     if need_stop
@@ -187,13 +175,10 @@ class Docker
   # remove an existing container
   def docker_rm
     need_rm = false
-    docker_ps = `docker ps --all`
-    if docker_ps != ''
-      docker_ps.each_line do |l|
-        if m = /#{@env_name}/.match(l)
-          need_rm = true
-          break
-        end
+    `docker ps --all`.each_line do |l|
+      if m = /#{@env_name}/.match(l)
+        need_rm = true
+        break
       end
     end
     if need_rm
