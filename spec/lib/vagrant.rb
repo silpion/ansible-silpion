@@ -3,9 +3,9 @@ class Vagrant
   private
 
   @ssh_host = nil
-  @ssh_port = nil
   @ssh_user = nil
   @ssh_keys = nil
+  @ssh_port = nil
 
   def initialize
     c = `vagrant ssh-config`
@@ -25,6 +25,22 @@ class Vagrant
   end
 
   public
-  attr_reader :ssh_host, :ssh_port, :ssh_user, :ssh_keys
+  attr_reader :ssh_host, :ssh_user, :ssh_keys, :ssh_port
+
+  def vagrant_up
+    `vagrant up --no-provision`
+  end
+
+  def vagrant_provision
+    `vagrant provision`
+  end
+
+  def vagrant_halt
+    `vagrant halt`
+  end
+
+  def vagrant_destroy
+    `vagrant destroy --force`
+  end
 
 end

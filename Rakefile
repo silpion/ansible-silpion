@@ -5,7 +5,9 @@ require 'rspec/core/rake_task'
 
 # we use data from the docker configuration in rake configuration
 require './spec/lib/docker'
+#require './spec/lib/vagrant'
 d = Docker.new
+#v = Vagrant.new
 
 
 desc "Run integration tests with serverspec"
@@ -21,6 +23,12 @@ end
 task :default => :lint
 
 
+desc "Clean test environment"
+task :clean => [:docker_stop, :docker_rm] do
+  d.ansible_hosts_del
+end
+
+
 
 # Docker
 desc "docker pull"
@@ -31,6 +39,7 @@ end
 desc "docker run"
 task :docker_run => [:docker_pull] do
   d.docker_run
+  d.ssh_available?
 end
 
 desc "docker 'provision'"
@@ -67,22 +76,22 @@ task :docker => [
 # Vagrant
 desc "vagrant up --no-provision"
 task :vagrant_up do
-  sh %{vagrant up --no-provision}
+  v.vagrant_up
 end
 
 desc "vagrant provision"
 task :vagrant_provision do
-  sh %{vagrant provision}
+  v.vagrant_provision
 end
 
 desc "vagrant halt"
 task :vagrant_halt do
-  sh %{vagrant halt}
+  v.vagrant_halt
 end
 
 desc "vagrant destroy --force"
 task :vagrant_destroy do
-  sh %{vagrant destroy --force}
+  v.vagrant_destroy
 end
 
 
