@@ -103,7 +103,7 @@ class Docker
   def ansible_hosts_add
     unless File.exists?(@ansible_hosts_file)
       File.open(@ansible_hosts_file, 'w') do |f|
-        f.puts "#{@env_name} ansible_connection=ssh ansible_ssh_host=#{@ssh_host} ansible_ssh_user=#{@ssh_user} ansible_ssh_port=#{@ssh_port} ansible_ssh_private_key_file=#{@ssh_keys}"
+        f.puts "#{@env_name} ansible_connection=ssh ansible_ssh_host=#{@ssh_host} ansible_ssh_user=#{@ssh_user} ansible_ssh_port=#{@ssh_port} ansible_ssh_private_key_file=#{File.absolute_path(@ssh_keys)}"
       end
     end
   end
