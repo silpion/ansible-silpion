@@ -14,8 +14,9 @@ RSpec.configure do |c|
     d = Docker.new
     c.host = d.ssh_host
     opts = Net::SSH::Config.for(c.host)
-    opts[:keys] = d.ssh_keys
     opts[:port] = d.ssh_port
+    opts[:keys] = d.ssh_keys
+    opts[:auth_methods] = Net::SSH::Config.default_auth_methods
     c.ssh = Net::SSH.start(d.ssh_host, d.ssh_user, opts)
   end
 end

@@ -10,10 +10,10 @@
 env_name: ansiblesilpiontest
 
 ssh_user: root
+ssh_keys: tests/silpion-insecure-private-key
 ssh_host: localhost
-ssh_keys: tests/docker-phusion-baseimage-insecure-private-key
 
-docker_img: phusion/baseimage
-docker_tag: 0.9.12
-docker_run: "--detach --hostname ansiblesilpiontest --name ansiblesilpiontest --net=bridge --publish {{ ssh_port }}:22"
-docker_cmd: "/sbin/my_init --enable-insecure-key"
+docker_img: silpion/ubuntu-upstart-sshkey
+docker_tag: 0.0.1
+docker_run: "--detach --name ansiblesilpiontest --net=bridge --publish {{ ssh_port }}:22"
+docker_cmd: "/sbin/init"

@@ -4,25 +4,26 @@
 #       queriyng docker looks fine
 #       container management feels too abstract for the moment
 
+require 'net/ssh'
 require 'socket'
 require 'yaml'
 
 class Docker
 
   private
-    # environment
+  # environment
   @env_name = nil
-    # ssh
+  # ssh
   @ssh_host = nil
   @ssh_user = nil
   @ssh_keys = nil
   @ssh_port = nil
-    # docker
+  # docker
   @docker_img = nil
   @docker_tag = nil
   @docker_run = nil
   @docker_cmd = nil
-    # ansible
+  # ansible
   @ansible_hosts_file = nil
 
   def initialize
@@ -34,14 +35,18 @@ class Docker
       @ssh_keys = config['ssh_keys']
       @docker_img = config['docker_img']
       @docker_tag = config['docker_tag']
-      @docker_run = config['docker_run'].gsub(/{{.*}}/, @ssh_port.to_s)
+      @docker_run = config['docker_run']
       @docker_cmd = config['docker_cmd']
     rescue
       raise 'Failed to parse configuration file: tests/docker.yml'
     end
 
+    # find or use existing port for SSH forwarding
     @ssh_port = ssh_port?
+    #   use ssh port for docker run argument list
+    @docker_run = @docker_run.gsub(/{{\ ssh_port\ }}/, @ssh_port.to_s)
 
+    # decide where to store the generated Ansible inventory hosts file
     if File.writable?('/tmp')
       @ansible_hosts_file = "/tmp/#{@env_name}.hosts"
     else
@@ -52,34 +57,32 @@ class Docker
 
   # find a free port for docker to use SSH forwarding
   def ssh_port?
-    port_min = 22200
-    port_max = 22300
-
-    # don't do anything if @ssh_port is already set
     if @ssh_port == nil
 
-      # we need to verify if there is a Docker container running
+      # get forwarded port from docker container
       `docker ps`.each_line do |l|
         if m = /#{@env_name}/.match(l)
           @ssh_port = `docker port #{@env_name} 22`.split(':')[1].to_i
           break
         end
       end
+    end
 
-      # there is no Docker container running for this project
-      #   find a free port for SSH forwarding
-      if @ssh_port == nil
-        while port_min < port_max do
-          begin
-            @ssh_port = port_min
-            TCPSocket.new(@ssh_host, @ssh_port)
-          rescue Errno::ECONNREFUSED
-            break
-          rescue
-            @ssh_port = 0
-          end
-          port_min += 1
+    # no port from a running docker container
+    #   find a free port from port_min..port_max
+    if @ssh_port == nil
+      port_min = 22200
+      port_max = 22300
+      while port_min < port_max do
+        begin
+          @ssh_port = port_min
+          TCPSocket.new(@ssh_host, @ssh_port)
+        rescue Errno::ECONNREFUSED
+          break
+        rescue
+          @ssh_port = 0
         end
+        port_min += 1
       end
     end
 
@@ -91,8 +94,8 @@ class Docker
   attr_reader :env_name,
     :ssh_host,
     :ssh_user,
-    :ssh_port,
     :ssh_keys,
+    :ssh_port,
     :ansible_hosts_file
 
 
@@ -110,6 +113,27 @@ class Docker
   def ansible_hosts_del
     if File.exists?(@ansible_hosts_file)
       File.unlink(@ansible_hosts_file)
+    end
+  end
+
+
+  # wait until ssh becomes available in the container
+  def ssh_available?
+    time_min = 0.1
+    time_max = 3.0
+    ssh_opts = Net::SSH::Config.for(@ssh_host)
+    ssh_opts[:port] = @ssh_port
+    ssh_opts[:keys] = @ssh_keys
+    ssh_opts[:auth_methods] = Net::SSH::Config.default_auth_methods
+    while time_min < time_max
+      begin
+        if ssh = Net::SSH.start(@ssh_host, @ssh_user, ssh_opts)
+          break
+        end
+      rescue
+        sleep(0.5)
+        time_min += 0.5
+      end
     end
   end
 
