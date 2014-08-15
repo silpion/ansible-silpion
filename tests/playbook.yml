@@ -1,5 +1,7 @@
 ---
 - hosts: all
+  sudo: yes
+  sudo_user: root
   vars:
     - silpion_root_password: "$6$$424Wd1I7Zf08UNjZ87zCI7CqSLDPJsmYixRJnsyXsavYUWpikshjobn8rbFAWU6cx/CzBkuaSteiZKhQj/0ia0"
   roles:

@@ -1,5 +1,8 @@
 require 'spec_helper'
 
+#describe file('/etc/passwd') do
+#end
+
 %w(
   acl
   at
