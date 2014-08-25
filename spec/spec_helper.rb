@@ -3,7 +3,7 @@
 require 'serverspec'
 require 'net/ssh'
 require 'lib/docker'
-require 'lib/vagrant'
+#require 'lib/vagrant'
 
 include SpecInfra::Helper::Exec
 include SpecInfra::Helper::DetectOS
