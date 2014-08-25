@@ -1,7 +1,8 @@
 require 'spec_helper'
 
-#describe file('/etc/passwd') do
-#end
+describe file('/etc/shadow') do
+  its(:content) { should match /\$6\$\$424Wd1I7Zf08UNjZ87zCI7CqSLDPJsmYixRJnsyXsavYUWpikshjobn8rbFAWU6cx\/CzBkuaSteiZKhQj\/0ia0/ }
+end
 
 %w(
   acl
