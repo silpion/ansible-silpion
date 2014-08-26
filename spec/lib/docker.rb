@@ -90,6 +90,13 @@ class Docker
   end
 
 
+  # run a docker command and puts the commandline to stdout
+  def docker_command(cmd)
+    puts "#{cmd}"
+    system "#{cmd} 1>/dev/null"
+  end
+
+
   public
   attr_reader :env_name,
     :ssh_host,
@@ -148,7 +155,7 @@ class Docker
       end
     end
     if need_pull
-      `docker pull #{@docker_img}:#{@docker_tag}`
+      docker_command "docker pull #{@docker_img}:#{@docker_tag}"
     end
   end
 
@@ -162,7 +169,7 @@ class Docker
       end
     end
     if need_run
-      `docker run #{@docker_run} #{@docker_img}:#{@docker_tag} #{@docker_cmd}`
+      docker_command "docker run #{@docker_run} #{@docker_img}:#{@docker_tag} #{@docker_cmd}"
     else
       docker_start
     end
@@ -178,7 +185,7 @@ class Docker
       end
     end
     if need_start
-      `docker start #{@env_name}`
+      docker_command "docker start #{@env_name}"
     end
   end
 
@@ -192,7 +199,7 @@ class Docker
       end
     end
     if need_stop
-      `docker stop #{@env_name}`
+      docker_command "docker stop #{@env_name}"
     end
   end
 
@@ -206,7 +213,7 @@ class Docker
       end
     end
     if need_rm
-      `docker rm --force #{@env_name}`
+      docker_command "docker rm --force #{@env_name}"
     end
   end
 
