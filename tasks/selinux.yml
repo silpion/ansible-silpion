@@ -1,0 +1,5 @@
+---
+- name: Install Python SELinux bindings
+  tags: silpion
+  with_items: silpion_package_list_selinux
+  action: "{{ ansible_pkg_mgr }} state=installed name={{ item }}"

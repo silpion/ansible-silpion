@@ -28,7 +28,7 @@
     update_cache=yes
     cache_valid_time=3600
 
-- name: Install required packages
+- name: Install requested packages
   tags: silpion
   with_flattened:
     - silpion_package_list_in

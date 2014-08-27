@@ -26,6 +26,10 @@
     password={{ silpion_root_password }}
 
 
+- include: selinux.yml
+  tags: silpion
+
+
 - include: Debian.yml
   tags: silpion
   when: ansible_os_family == 'Debian'

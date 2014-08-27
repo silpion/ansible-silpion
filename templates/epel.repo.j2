@@ -1,0 +1,44 @@
+#  --------------------
+# ( Managed by Ansible )
+#  --------------------
+#   o            .    .     .
+#    o      .  . .     `  ,
+#     o    .; .  : .' :  :  : .
+#      o   i..`: i` i.i.,i  i .
+#       o   `,--.|i |i|ii|ii|i:
+#            UooU\.'@@@@@@`.||'
+#            \__/(@@@@@@@@@@)'
+#                 (@@@@@@@@)
+#                 `YY~~~~YY'
+#                  ||    ||
+
+[epel]
+name=Extra Packages for Enterprise Linux - $basearch
+baseurl={{ silpion_epel_baseurl }}/{{ silpion_epel_version }}/$basearch
+mirrorlist={{ silpion_epel_mirrorlist }}?repo=epel-{{ silpion_epel_version }}&arch=$basearch
+failovermethod=priority
+enabled=1
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ silpion_epel_version }}
+
+{% if silpion_epel_enable_debug %}
+[epel-debug]
+name=Extra Packages for Enterprise Linux - $basearch - Debug
+baseurl={{ silpion_epel_baseurl }}/{{ silpion_epel_version }}/$basearch/debug
+mirrorlist={{ silpion_epel_mirrorlist }}?repo=epel-debug-{{ silpion_epel_version }}&arch=$basearch
+failovermethod=priority
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ silpion_epel_version }}
+{% endif %}
+
+{% if silpion_epel_enable_source %}
+[epel-source]
+name=Extra Packages for Enterprise Linux - Source
+baseurl={{ silpion_epel_baseurl }}/{{ silpion_epel_version }}/SRPMS
+mirrorlist={{ silpion_epel_mirrorlist }}?repo=epel-source-{{ silpion_epel_version }}&arch=$basearch
+failovermethod=priority
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ silpion_epel_version }}
+{% endif %}

@@ -3,6 +3,35 @@
 
 # Packages to be installed
 silpion_package_list_in:
+  - acl
+  - at
+  - bash-completion
+  - bind-utils
+  - conntrack-tools
+  - curl
+  - dstat
+  - git
+  - htop
+  - iptables
+  - lsof
+  - nc
+  - ncdu
+  - ngrep
+  - numactl
+  - patch
+  - psmisc
+  - pv
+  - redhat-lsb
+  - rsync
+  - screen
+  - socat
+  - ssldump
+  - strace
+  - sysfsutils
+  - tcpdump
+  - time
+  - tmux
+  - tree
   - vim
 
 # Packages to be removed
