@@ -1,0 +1,7 @@
+---
+# tasks for ansible_os_family == 'RedHat'
+
+
+# TODO EPEL repository
+# TODO Yum proxies
+# TODO Yum plugins

@@ -1,0 +1,35 @@
+---
+# tasks file for ansible-silpion
+- name: Assert platform is supported
+  tags: silpion
+  assert:
+    that:
+      - ansible_os_family in ['Debian', 'RedHat']
+
+- name: Assert silpion_root_password variable is set
+  tags: silpion
+  assert:
+    that:
+      - silpion_root_password != ""
+
+
+- include_vars: "{{ ansible_os_family }}.yml"
+  tags: silpion
+
+
+- name: Ensure root password
+  tags: silpion
+  user:
+    state=present
+    name=root
+    update_password=always
+    password={{ silpion_root_password }}
+
+
+- include: Debian.yml
+  tags: silpion
+  when: ansible_os_family == 'Debian'
+
+- include: RedHat.yml
+  tags: silpion
+  when: ansible_os_family == 'RedHat'
