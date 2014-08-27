@@ -27,3 +27,9 @@ task :clean do
   d.docker_rm
   d.ansible_hosts_del
 end
+
+
+desc "SSH into the Docker container"
+task :ssh do
+  sh %{ssh -l #{d.ssh_user} -i #{d.ssh_keys} -p #{d.ssh_port} #{d.ssh_host}}
+end

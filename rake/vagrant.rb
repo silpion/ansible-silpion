@@ -19,3 +19,9 @@ task :clean do
   sh %{vagrant halt}
   sh %{vagrant destroy --force}
 end
+
+
+desc "SSH into the Vagrant VM"
+task :ssh do
+  sh %{vagrant ssh}
+end
