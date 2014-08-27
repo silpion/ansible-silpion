@@ -1,8 +1,16 @@
 require 'spec_helper'
 
+
 describe file('/etc/shadow') do
   its(:content) { should match /\$6\$\$424Wd1I7Zf08UNjZ87zCI7CqSLDPJsmYixRJnsyXsavYUWpikshjobn8rbFAWU6cx\/CzBkuaSteiZKhQj\/0ia0/ }
 end
+
+
+describe file('/etc/apt/apt.conf.d/proxy.conf') do
+  it { should be_file }
+  its(:content) { should match 'Acquire::http::Proxy "http://apt-proxy.silpion.de:9999";' }
+end
+
 
 %w(
   acl
@@ -45,4 +53,9 @@ end
   describe package(pkg) do
     it { should be_installed }
   end
+end
+
+
+describe file('/etc/alternatives/editor') do
+  it { should be_linked_to '/usr/bin/vim.basic' }
 end
