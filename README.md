@@ -35,7 +35,12 @@ To create a SHA 512 hash for a password use the following Python snippet:
 
 ### ansible_os_family == 'RedHat'
 
-* ``silpion_yum_erase_fastestmirror``: Get rid of the yum "fastestmirror" plugin (default: ``true``)
+* ``silpion_yum_erase_fastestmirror``: Get rid of the yum "fastestmirror" plugin (default: ``true``) (**NOT IN USE**)
+* ``silpion_epel_version``: EPEL version to use (default: ``6``)
+* ``silpion_epel_baseurl``: EPEL repository base url (default: ``http://download.fedoraproject.org/pub/epel``)
+* ``silpion_epel_mirrorurl``: EPEL repository mirror url (default: ``https://mirrors.fedoraproject.org/metalink``)
+* ``silpion_epel_enable_debug``: Enable or disable EPEL debug repository (default: ``false`` (disabled))
+* ``silpion_epel_enable_source``: Enable or disable EPEL source repository (default: ``false`` (disabled))
 
 ## Dependencies
 
@@ -56,29 +61,26 @@ Apache Version 2.0
 ## Integration testing
 
 This role provides integration tests using the Ruby RSpec/serverspec framework
-with a number of drawbacks at the time of writing this documentation.
+with a few drawbacks at the time of writing this documentation.
 
 - Currently supports ansible_os_family == 'Debian' only.
-- Integration testing with Vagrant is extremely slow.
-- Integration testing with Docker solves Vagrant performance issues.
-    - There is no way to successfully test installed services with Docker (work in progress).
 
 Running integration tests requires a number of dependencies being
 installed. As this role uses Ruby RSpec there is the need to have
 Ruby with rake and bundler available.
 
-    # install dependencies with bundler
+    # install role specific dependencies with bundler
     bundle install
 
 <!-- -->
 
     # run the complete test suite with Docker
-    rake docker
+    rake suite
 
 <!-- -->
 
     # run the complete test suite with Vagrant
-    rake vagrant
+    RAKE_ANSIBLE_USE_VAGRANT=1 rake suite
 
 
 ## Author information

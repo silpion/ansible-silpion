@@ -35,7 +35,7 @@ silpion_apt_proxy_url: 'http://apt-proxy.silpion.de:9999'
 #     epel configuration
 silpion_epel_version: 6
 silpion_epel_baseurl: 'http://download.fedoraproject.org/pub/epel'
-silpion_epel_mirrorlist: 'https://mirrors.fedoraproject.org/metalink'
+silpion_epel_mirrorurl: 'https://mirrors.fedoraproject.org/metalink'
 #       enable or disable epel debug or source packages repositories
 silpion_epel_enable_debug: false
 silpion_epel_enable_source: false

@@ -15,7 +15,7 @@
 [epel]
 name=Extra Packages for Enterprise Linux - $basearch
 baseurl={{ silpion_epel_baseurl }}/{{ silpion_epel_version }}/$basearch
-mirrorlist={{ silpion_epel_mirrorlist }}?repo=epel-{{ silpion_epel_version }}&arch=$basearch
+mirrorlist={{ silpion_epel_mirrorurl }}?repo=epel-{{ silpion_epel_version }}&arch=$basearch
 failovermethod=priority
 enabled=1
 gpgcheck=0
@@ -25,7 +25,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ silpion_epel_version }}
 [epel-debug]
 name=Extra Packages for Enterprise Linux - $basearch - Debug
 baseurl={{ silpion_epel_baseurl }}/{{ silpion_epel_version }}/$basearch/debug
-mirrorlist={{ silpion_epel_mirrorlist }}?repo=epel-debug-{{ silpion_epel_version }}&arch=$basearch
+mirrorlist={{ silpion_epel_mirrorurl }}?repo=epel-debug-{{ silpion_epel_version }}&arch=$basearch
 failovermethod=priority
 enabled=1
 gpgcheck=1
@@ -36,7 +36,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ silpion_epel_version }}
 [epel-source]
 name=Extra Packages for Enterprise Linux - Source
 baseurl={{ silpion_epel_baseurl }}/{{ silpion_epel_version }}/SRPMS
-mirrorlist={{ silpion_epel_mirrorlist }}?repo=epel-source-{{ silpion_epel_version }}&arch=$basearch
+mirrorlist={{ silpion_epel_mirrorurl }}?repo=epel-source-{{ silpion_epel_version }}&arch=$basearch
 failovermethod=priority
 enabled=1
 gpgcheck=1
