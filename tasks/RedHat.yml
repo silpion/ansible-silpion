@@ -1,0 +1,40 @@
+---
+# tasks for ansible_os_family == 'RedHat'
+
+# TODO yum proxies
+# TODO yum plugins
+
+
+# Most packages are available through EPEL only
+- name: Install EPEL repository configuration
+  tags: silpion
+  template:
+    src=epel.repo.j2
+    dest=/etc/yum.repos.d/epel.repo
+    owner=0
+    group=0
+    mode=0644
+
+# yum manages caches itself but I've seen situations
+#   where yum failed with invalid caches
+- name: Update yum package cache
+  tags: silpion
+  command: yum --assumeyes --quiet makecache
+
+- name: Install requested packages
+  tags: silpion
+  with_flattened:
+    - silpion_package_list_in
+    - silpion_package_list_in_custom
+  yum:
+    state=installed
+    name={{ item }}
+
+- name: Remove unwanted packages
+  tags: silpion
+  with_flattened:
+    - silpion_package_list_out
+    - silpion_package_list_out_custom
+  yum:
+    state=absent
+    name={{ item }}
