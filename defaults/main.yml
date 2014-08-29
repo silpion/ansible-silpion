@@ -25,7 +25,7 @@ silpion_package_list_out_custom: []
 #
 #     apt configuration
 silpion_apt_proxy_enabled: true
-silpion_apt_proxy_url: 'http://apt-proxy.silpion.de:9999'
+silpion_apt_proxy_url: 'http://apt-proxy.office.silpion.de:9999'
 
 #   ansible_os_family == 'RedHat'
 #

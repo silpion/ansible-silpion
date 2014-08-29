@@ -8,7 +8,7 @@ end
 
 describe file('/etc/apt/apt.conf.d/proxy.conf') do
   it { should be_file }
-  its(:content) { should match 'Acquire::http::Proxy "http://apt-proxy.silpion.de:9999";' }
+  its(:content) { should match 'Acquire::http::Proxy "http://apt-proxy.office.silpion.de:9999";' }
 end
 
 
