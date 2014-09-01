@@ -1,4 +1,10 @@
 ---
+# This is something like a meta dependency for Ansible itself.
+#   Ansible calls `selinuxenabled` in module_utils/basic and
+#   fails the play if corresponding Python SELinux bindings
+#   are not installed.
+# As of now Ansible has no useful way to deal with such meta
+#   dependencies that I'm aware of.
 - name: Install Python SELinux bindings
   tags: silpion
   with_items: silpion_package_list_selinux
