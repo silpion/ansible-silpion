@@ -1,9 +1,3 @@
-# TODO learn how to Ruby
-# TODO error handling
-# TODO there's the `docker-api' gem
-#       queriyng docker looks fine
-#       container management feels too abstract for the moment
-
 require 'net/ssh'
 require 'socket'
 require 'yaml'
