@@ -21,7 +21,6 @@ silpion_package_list_in:
   - patch
   - psmisc
   - pv
-  - redhat-lsb
   - rsync
   - screen
   - socat
