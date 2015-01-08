@@ -5,6 +5,7 @@
 # Manage Apt proxy
 - name: Install Apt proxy configuration
   tags: silpion
+  sudo: yes
   when: silpion_apt_proxy_enabled == true
   template:
     src=apt.proxy.conf.j2
@@ -15,6 +16,7 @@
 
 - name: Uninstall Apt proxy configuration
   tags: silpion
+  sudo: yes
   when: silpion_apt_proxy_enabled == false
   file:
     state=absent
@@ -24,12 +26,14 @@
 # Manage package installation/removal
 - name: Update apt package cache
   tags: silpion
+  sudo: yes
   apt:
     update_cache=yes
     cache_valid_time=3600
 
 - name: Install requested packages
   tags: silpion
+  sudo: yes
   with_flattened:
     - silpion_package_list_in
     - silpion_package_list_in_custom
@@ -41,6 +45,7 @@
 
 - name: Remove unwanted packages
   tags: silpion
+  sudo: yes
   with_flattened:
     - silpion_package_list_out
     - silpion_package_list_out_custom
@@ -54,6 +59,7 @@
 # Misc system configuration
 - name: Configure vim as default editor
   tags: silpion
+  sudo: yes
   alternatives:
     link=/etc/alternatives/editor
     name=editor
