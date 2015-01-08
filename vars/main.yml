@@ -1,3 +1,4 @@
 ---
-# vars file for ansible-silpion
-silpion_role_version: 0.1.4
+silpion_supported_platforms:
+  - Debian
+  - RedHat
