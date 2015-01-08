@@ -20,6 +20,7 @@
 
 - name: Ensure root password
   tags: silpion
+  sudo: yes
   user:
     state=present
     name=root

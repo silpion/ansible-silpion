@@ -8,6 +8,7 @@
 # Most packages are available through EPEL only
 - name: Install EPEL repository configuration
   tags: silpion
+  sudo: yes
   template:
     src=epel.repo.j2
     dest=/etc/yum.repos.d/epel.repo
@@ -19,10 +20,12 @@
 #   where yum failed with invalid caches
 - name: Update yum package cache
   tags: silpion
+  sudo: yes
   command: yum --assumeyes --quiet makecache
 
 - name: Install requested packages
   tags: silpion
+  sudo: yes
   with_flattened:
     - silpion_package_list_in
     - silpion_package_list_in_custom
@@ -32,6 +35,7 @@
 
 - name: Remove unwanted packages
   tags: silpion
+  sudo: yes
   with_flattened:
     - silpion_package_list_out
     - silpion_package_list_out_custom
