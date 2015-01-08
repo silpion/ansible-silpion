@@ -19,9 +19,14 @@ Baseline configuration for all nodes managed at Silpion.
 
 ### Pre-hash root password
 
-To create a SHA 512 hash for a password use the following Python snippet:
+To cerate a SHA 512 hash suitable for the Ansible user module to configure
+a users password pre-hashed there is the `pre-hash-passwd` script in `tools`
+directory.
+This requires python2 und the passlib modules to be installed.
 
-    python -c 'import crypt; print(crypt.crypt("<PASSWORD>", "$6$"))'
+The following Python snippet creates a pre-hashed password:
+
+    python2 -c 'from passlib.hash import sha512_crypt; print(sha512_crypt.encrypt("<PASSWORD>"))'
 
 ## Role Variables
 
