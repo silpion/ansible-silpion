@@ -37,6 +37,7 @@ The following Python snippet creates a pre-hashed password:
 
 * ``silpion_apt_proxy_enable``: Enable or disable an APT proxy (default: ``true``)
 * ``silpion_apt_proxy_url``: Configure the APT proxy url (default: ``http://apt-proxy.silpion.de:9999``)
+* ``silpion_apt_autoupgrades_enable``: Enable or disable APT automatic unattended upgrades (boolean, default: ``false``)
 
 ### ansible_os_family == 'RedHat'
 
