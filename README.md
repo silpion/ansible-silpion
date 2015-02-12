@@ -35,7 +35,7 @@ The following Python snippet creates a pre-hashed password:
 
 ### ansible_os_family == 'Debian'
 
-* ``silpion_apt_proxy_enabled``: Enable or disable an APT proxy (default: ``true``)
+* ``silpion_apt_proxy_enable``: Enable or disable an APT proxy (default: ``true``)
 * ``silpion_apt_proxy_url``: Configure the APT proxy url (default: ``http://apt-proxy.silpion.de:9999``)
 
 ### ansible_os_family == 'RedHat'

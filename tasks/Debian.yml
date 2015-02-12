@@ -6,7 +6,7 @@
 - name: Install Apt proxy configuration
   tags: silpion
   sudo: yes
-  when: silpion_apt_proxy_enabled == true
+  when: silpion_apt_proxy_enable == true
   template:
     src=apt.proxy.conf.j2
     dest=/etc/apt/apt.conf.d/proxy.conf
@@ -17,7 +17,7 @@
 - name: Uninstall Apt proxy configuration
   tags: silpion
   sudo: yes
-  when: silpion_apt_proxy_enabled == false
+  when: silpion_apt_proxy_enable == false
   file:
     state=absent
     dest=/etc/apt/apt.conf.d/proxy.conf
