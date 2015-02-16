@@ -30,22 +30,23 @@ The following Python snippet creates a pre-hashed password:
 
 ## Role Variables
 
-* ``silpion_root_password``: sha512 pre-hashed password for the root user (default: '')
-* ``silpion_package_list_in_custom``: List of custom packages to be installed (default: ``[]``)
+* ``silpion_root_password``: sha512 pre-hashed password for the root user (string, default: '')
+* ``silpion_package_list_in_custom``: List of custom packages to be installed (list, default: ``[]``)
 
 ### ansible_os_family == 'Debian'
 
-* ``silpion_apt_proxy_enabled``: Enable or disable an APT proxy (default: ``true``)
-* ``silpion_apt_proxy_url``: Configure the APT proxy url (default: ``http://apt-proxy.silpion.de:9999``)
+* ``silpion_apt_proxy_enable``: Enable or disable an APT proxy (boolean, default: ``true``)
+* ``silpion_apt_proxy_url``: Configure the APT proxy url (string, default: ``http://apt-proxy.silpion.de:9999``)
+* ``silpion_apt_autoupgrades_enable``: Enable or disable APT automatic unattended upgrades (boolean, default: ``false``)
 
 ### ansible_os_family == 'RedHat'
 
-* ``silpion_yum_erase_fastestmirror``: Get rid of the yum "fastestmirror" plugin (default: ``true``) (**NOT IN USE**)
-* ``silpion_epel_version``: EPEL version to use (default: ``6``)
-* ``silpion_epel_baseurl``: EPEL repository base url (default: ``http://download.fedoraproject.org/pub/epel``)
-* ``silpion_epel_mirrorurl``: EPEL repository mirror url (default: ``https://mirrors.fedoraproject.org/metalink``)
-* ``silpion_epel_enable_debug``: Enable or disable EPEL debug repository (default: ``false`` (disabled))
-* ``silpion_epel_enable_source``: Enable or disable EPEL source repository (default: ``false`` (disabled))
+* ``silpion_yum_erase_fastestmirror``: Get rid of the yum "fastestmirror" plugin (boolean, default: ``true``) (**NOT IN USE**)
+* ``silpion_epel_version``: EPEL version to use (integer, default: ``6``)
+* ``silpion_epel_baseurl``: EPEL repository base url (string, default: ``http://download.fedoraproject.org/pub/epel``)
+* ``silpion_epel_mirrorurl``: EPEL repository mirror url (string, default: ``https://mirrors.fedoraproject.org/metalink``)
+* ``silpion_epel_enable_debug``: Enable or disable EPEL debug repository (boolean, default: ``false`` (disabled))
+* ``silpion_epel_enable_source``: Enable or disable EPEL source repository (boolean, default: ``false`` (disabled))
 
 ## Dependencies
 

@@ -46,3 +46,9 @@ silpion_package_list_out: []
 # Packages required to run Ansible with SELinux enabled node
 silpion_package_list_selinux:
   - python-selinux
+
+
+# Which file to configure for unattended upgrades configuration
+#   TODO very hardcoded and might not work
+#   TODO understand configuration precedence with apt
+silpion_apt_autoupgrades_cfg_file: /etc/apt/apt.conf.d/20auto-upgrades
