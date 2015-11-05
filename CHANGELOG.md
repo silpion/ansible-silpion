@@ -1,3 +1,10 @@
+# 0.3.1
+
+
+* Add release script
+* Add deprecated marker
+
+Alvaro Aleman (2):
 # 0.3.0
 
 Mark Kusch (3):

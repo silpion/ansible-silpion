@@ -1,3 +1,9 @@
+# Deprecated
+
+**This role is deprecated and not in use anymore.**
+
+Please refer to [ansible-firstboot-silpion](https://git.silpion.de/projects/ISAR/repos/ansible-firstboot-silpion/browse) for our current base configuration.
+
 # ansible-silpion
 
 Baseline configuration for all nodes managed at Silpion.
